@@ -6,6 +6,7 @@ export class StopwatchStore {
   tickSpeed = 200;
   step = 1;
   count = 0;
+  todos: any = null;
 
   lastIntervalId: number | null = null;
 
@@ -26,7 +27,40 @@ export class StopwatchStore {
     }
 
     this.lastIntervalId = window.setInterval(this.nextStep, this.tickSpeed);
+
+    this.fetchData();
   }
+
+  setTodos = (todos: any) => {
+    this.todos = todos;
+  };
+
+  fetchData = () => {
+    const data = {
+      // A: Does not work.
+      // todos are populated at StopwatchStore@nextStep,
+      // expected at setTodos or fetchData.
+      abc: { id: 'abc', firstName: 'First', lastName: 'Last' },
+
+      // B: Does not work.
+      // todos are populated at StopwatchStore@start,
+      // expected at setTodos or fetchData.
+      // 'def': { id: 'def' },
+
+      // C: Works.
+      // todos are populated at StopwatchStore@fetchData,
+      // although not at setTodos.
+      // 'def': 'xyz',
+
+      // D: Works.
+      // todos are populated at StopwatchStore@setTodos.
+      // Blank object
+    };
+
+    this.setTodos(data);
+
+    // this.todos = data
+  };
 
   get isTicking() {
     return !!this.lastIntervalId;
